@@ -3,7 +3,7 @@ import { Table } from "typeorm/schema-builder/table/Table";
 
 export default class CreateTransactions1600540097197 implements MigrationInterface {
 
-    public async up(queryRunner: QueryRunner): Promise<any> {
+    public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.createTable(
         new Table({
           name: 'transactions',
@@ -44,7 +44,7 @@ export default class CreateTransactions1600540097197 implements MigrationInterfa
       )
     }
 
-    public async down(queryRunner: QueryRunner): Promise<any> {
+    public async down(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.dropTable('transactions');
     }
 
