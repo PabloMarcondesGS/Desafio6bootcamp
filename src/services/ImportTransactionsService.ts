@@ -57,14 +57,36 @@ class ImportTransactionsService {
       (category: Category) => category.title
     );
 
-    const addCategoryTitle = categories.filter(
+    const addCategoryTitles = categories.filter(
       category => !existentCategoriesTitles.includes(category),
+    ).filter((value, index, self) => self.indexOf(value) === index)
+
+
+    const newCategories = categoriesRepository.create(
+      addCategoryTitles.map(title => ({
+        title,
+      })),
     );
 
+    await categoriesRepository.save(newCategories);
 
-    // return { categories, transactions }
-    // console.log(existentCategoriesTitles);
-    console.log(addCategoryTitle);
+    const finalCategories = [...newCategories, ...existentCategories];
+
+    const createdTransactions = transactionsRepository.create(
+      transactions.map(transactions => ({
+          title: transactions.title,
+          type: transactions.type,
+          value: transactions.value,
+          category: finalCategories.find(
+            category => category.title === transactions.category,
+          ),
+        })),
+    );
+
+    await transactionsRepository.save(createdTransactions);
+    await fs.promises.unlink(filePath);
+
+    return createdTransactions;
   }
 }
 
